@@ -12,6 +12,7 @@ from blocklist import BLOCKLIST
 from db import db
 
 from resources.user import blp as UserBlueprint
+from resources.restaurant import blp as RestaurantBlueprint
 
 def create_app(db_url=None):
     app = Flask(__name__)
@@ -45,5 +46,6 @@ def create_app(db_url=None):
         ),401,
 
     api.register_blueprint(UserBlueprint)
+    api.register_blueprint(RestaurantBlueprint)
 
     return app

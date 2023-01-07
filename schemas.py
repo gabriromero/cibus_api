@@ -12,3 +12,8 @@ class UserSchema(Schema):
 class LoginUserSchema(Schema):
     mail = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)
+
+class RestaurantSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name     = fields.Str(required=True, validate=[validate.Length(min=4, max=50)])
+    address  = fields.Str(required=True, validate=[validate.Length(min=2, max=100)])
