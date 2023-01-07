@@ -9,3 +9,4 @@ class UserModel(db.Model):
     name     = db.Column(db.String(80), nullable=False)
     last_name= db.Column(db.String(80), nullable=False)
 
+    restaurants = db.relationship("RestaurantModel", back_populates="user", lazy="dynamic")
