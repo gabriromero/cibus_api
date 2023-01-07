@@ -4,5 +4,11 @@ from marshmallow import Schema, fields
 
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
-    username = fields.Str(required=True)
+    mail = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
+    name     = fields.Str(required=True)
+    last_name= fields.Str(required=True)
+
+class LoginUserSchema(Schema):
+    mail = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)

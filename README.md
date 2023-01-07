@@ -20,3 +20,8 @@ docker build -t cibus_api:latest .
 ```
 docker run -dp 5000:5000 -w /app -v "$(pwd):/app" cibus_api
 ```
+
+### Run with autoreload
+```
+flask --debug run
+```

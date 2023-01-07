@@ -9,7 +9,7 @@ from blocklist import BLOCKLIST
 
 from db import db
 from models import UserModel
-from schemas import UserSchema
+from schemas import UserSchema, LoginUserSchema
 
 blp = Blueprint("Users", __name__, description="Operations on users")
 
@@ -19,8 +19,10 @@ class Register(MethodView):
     @blp.response(200, UserSchema)
     def post(self, user_data):
         user = UserModel(
-            username = user_data["username"],
-            password = pbkdf2_sha256.hash(user_data["password"])
+            mail = user_data["mail"],
+            password = pbkdf2_sha256.hash(user_data["password"]),
+            name = user_data["name"],
+            last_name = user_data["last_name"]
         )
 
         try:
@@ -33,10 +35,10 @@ class Register(MethodView):
 
 @blp.route("/login")
 class Login(MethodView):
-    @blp.arguments(UserSchema)
+    @blp.arguments(LoginUserSchema)
     def post(self, user_data):
         user = UserModel.query.filter(
-            UserModel.username == user_data["username"]
+            UserModel.mail == user_data["mail"]
         ).first()
 
         if user and pbkdf2_sha256.verify(user_data["password"], user.password):
