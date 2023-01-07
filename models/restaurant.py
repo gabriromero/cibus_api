@@ -8,4 +8,6 @@ class RestaurantModel(db.Model):
     address = db.Column(db.String(256), nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=False, nullable=False)
+
     user = db.relationship("UserModel", back_populates="restaurants")
+    meals = db.relationship("MealModel", back_populates="restaurant", lazy="dynamic")
