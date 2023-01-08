@@ -3,6 +3,7 @@ import os
 from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_migrate import Migrate
+from flask_cors import CORS
 
 from dotenv import load_dotenv
 
@@ -18,6 +19,7 @@ from resources.meal import blp as MealBlueprint
 def create_app(db_url=None):
     app = Flask(__name__)
     load_dotenv()
+    CORS(app)
 
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Cibus REST API"
