@@ -62,7 +62,10 @@ class RestaurantCrud(MethodView):
     def delete(self,restaurant_id):
         restaurant = RestaurantModel.query.get_or_404(restaurant_id)
 
-        db.session.delete(restaurant)
-        db.session.commit()
+        try:
+            db.session.delete(restaurant)
+            db.session.commit()
+        except IntegrityError:
+            abort(400,message="First remove associated meals")
 
         return {"message" : f"Restaurant with name '{restaurant.name}' deleted"}
