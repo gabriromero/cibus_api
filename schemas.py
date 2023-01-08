@@ -23,8 +23,8 @@ class RestaurantSchema(Schema):
     user_id = fields.Int(required=True)
 
 class RestaurantUpdateSchema(Schema):
-    name     = fields.Str()
-    address  = fields.Str()
+    name     = fields.Str(validate=[validate.Length(min=4, max=50)])
+    address  = fields.Str(validate=[validate.Length(min=2, max=100)])
 
 
 # User schema
