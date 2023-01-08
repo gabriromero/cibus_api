@@ -58,7 +58,7 @@ class Logout(MethodView):
 
 
 @blp.route("/user/<int:user_id>")
-class User(MethodView):
+class UserCrud(MethodView):
     @blp.response(200, UserSchema)
     def get(self, user_id):
         user = UserModel.query.get_or_404(user_id)
@@ -76,5 +76,10 @@ class User(MethodView):
 
         return {"message" : "User deleted"}, 200
 
+@blp.route("/user")
+class User(MethodView):
+    @blp.response(200, UserSchema(many=True))
+    def get(self):
+        return UserModel.query.all()
 
     
