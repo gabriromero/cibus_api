@@ -65,4 +65,4 @@ class RestaurantCrud(MethodView):
         db.session.delete(restaurant)
         db.session.commit()
 
-        return {"message" : f"Restaurant with id {restaurant.id} deleted"}
+        return {"message" : f"Restaurant with name '{restaurant.name}' deleted"}

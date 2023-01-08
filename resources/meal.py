@@ -61,11 +61,11 @@ class MealCrud(MethodView):
 
         return meal,200
 
-    def delete(self,restaurant_id):
-        restaurant = RestaurantModel.query.get_or_404(restaurant_id)
+    def delete(self,meal_id):
+        meal = MealModel.query.get_or_404(meal_id)
 
-        db.session.delete(restaurant)
+        db.session.delete(meal)
         db.session.commit()
 
-        return {"message" : f"Restaurant with id {restaurant.id} deleted"}
+        return {"message" : f"Meal with name '{meal.name}' deleted"}
 
