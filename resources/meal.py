@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from db import db
 from models import MealModel, RestaurantModel
-from schemas import MealSchema
+from schemas import MealSchema, MealUpdateSchema
 
 blp = Blueprint("Meals", __name__, description="Operations on meals")
 
@@ -34,29 +34,32 @@ class Meal(MethodView):
         
         return meal, 201
 
-"""
-@blp.route("/restaurant/<string:restaurant_id>")
-class RestaurantCrud(MethodView):
-    @blp.response(200, RestaurantSchema)
-    def get(self,restaurant_id):
-        store = RestaurantModel.query.get_or_404(restaurant_id)
-        return store
 
-    @blp.arguments(RestaurantUpdateSchema)
-    @blp.response(200, RestaurantSchema)
-    def put(self,restaurant_data, restaurant_id):
-        restaurant = RestaurantModel.query.get_or_404(restaurant_id)
-        
-        if("name" in restaurant_data):
-            restaurant.name = restaurant_data["name"]
-        
-        if("address" in restaurant_data):
-            restaurant.address = restaurant_data["address"]
+@blp.route("/meal/<string:meal_id>")
+class MealCrud(MethodView):
+    @blp.response(200, MealSchema)
+    def get(self,meal_id):
+        meal = MealModel.query.get_or_404(meal_id)
+        return meal
 
-        db.session.add(restaurant)
+    @blp.arguments(MealUpdateSchema)
+    @blp.response(200, MealSchema)
+    def put(self,meal_data, meal_id):
+        meal = MealModel.query.get_or_404(meal_id)
+        
+        if("name" in meal_data):
+            meal.name = meal_data["name"]
+        
+        if("description" in meal_data):
+            meal.description = meal_data["description"]
+
+        if("price" in meal_data):
+            meal.price = meal_data["price"]
+
+        db.session.add(meal)
         db.session.commit()
 
-        return restaurant,200
+        return meal,200
 
     def delete(self,restaurant_id):
         restaurant = RestaurantModel.query.get_or_404(restaurant_id)
@@ -66,4 +69,3 @@ class RestaurantCrud(MethodView):
 
         return {"message" : f"Restaurant with id {restaurant.id} deleted"}
 
-"""

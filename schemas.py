@@ -9,8 +9,10 @@ class MealSchema(Schema):
     price = fields.Float(required=True, validate=[validate.Range(min=0.01, max=1000)])
     restaurant_id = fields.Int(required=True)
 
-class RestaurantUpdateSchema(Schema):
-    pass
+class MealUpdateSchema(Schema):
+    name     = fields.Str(validate=[validate.Length(min=2, max=80)])
+    description  = fields.Str(validate=[validate.Length(min=2, max=256)])
+    price = fields.Float(validate=[validate.Range(min=0.01, max=1000)])
 
 
 # Restaurant Schema
