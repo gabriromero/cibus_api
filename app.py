@@ -13,6 +13,7 @@ from db import db
 
 from resources.user import blp as UserBlueprint
 from resources.restaurant import blp as RestaurantBlueprint
+from resources.meal import blp as MealBlueprint
 
 def create_app(db_url=None):
     app = Flask(__name__)
@@ -47,5 +48,6 @@ def create_app(db_url=None):
 
     api.register_blueprint(UserBlueprint)
     api.register_blueprint(RestaurantBlueprint)
+    api.register_blueprint(MealBlueprint)
 
     return app

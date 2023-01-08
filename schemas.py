@@ -1,10 +1,19 @@
 from marshmallow import Schema, fields, validate
 
-# User schema
-class LoginUserSchema(Schema):
-    mail = fields.Str(required=True)
-    password = fields.Str(required=True, load_only=True)
 
+# Meal Schema
+class MealSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name     = fields.Str(required=True, validate=[validate.Length(min=2, max=80)])
+    description  = fields.Str(required=True, validate=[validate.Length(min=2, max=256)])
+    price = fields.Float(required=True, validate=[validate.Range(min=0.01, max=1000)])
+    restaurant_id = fields.Int(required=True)
+
+class RestaurantUpdateSchema(Schema):
+    pass
+
+
+# Restaurant Schema
 class RestaurantSchema(Schema):
     id = fields.Int(dump_only=True)
     name     = fields.Str(required=True, validate=[validate.Length(min=4, max=50)])
@@ -16,6 +25,10 @@ class RestaurantUpdateSchema(Schema):
     address  = fields.Str()
 
 
+# User schema
+class LoginUserSchema(Schema):
+    mail = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
     mail = fields.Str(required=True, validate=[validate.Length(min=4, max=50)])
