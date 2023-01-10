@@ -19,7 +19,6 @@ blp = Blueprint("Restaurants", __name__, description="Operations on restaurants"
 class Restaurant(MethodView):
     @blp.response(200, RestaurantSchema(many=True))
     @jwt_required()
-    @admin_required()
     def get(self):
         return RestaurantModel.query.filter_by(user_id=get_jwt_identity())
 
