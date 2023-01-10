@@ -9,7 +9,7 @@ from schemas import MealSchema, MealUpdateSchema
 
 blp = Blueprint("Meals", __name__, description="Operations on meals")
 
-@blp.route("/meal")
+@blp.route("/meals")
 class Meal(MethodView):
     @blp.response(200, MealSchema(many=True))
     def get(self):
@@ -35,7 +35,7 @@ class Meal(MethodView):
         return meal, 201
 
 
-@blp.route("/meal/<string:meal_id>")
+@blp.route("/meals/<string:meal_id>")
 class MealCrud(MethodView):
     @blp.response(200, MealSchema)
     def get(self,meal_id):

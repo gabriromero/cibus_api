@@ -57,7 +57,7 @@ class Logout(MethodView):
         
 
 
-@blp.route("/user/<int:user_id>")
+@blp.route("/users/<int:user_id>")
 class UserCrud(MethodView):
     @blp.response(200, UserSchema)
     def get(self, user_id):
@@ -76,7 +76,7 @@ class UserCrud(MethodView):
 
         return {"message" : "User deleted"}, 200
 
-@blp.route("/user")
+@blp.route("/users")
 class User(MethodView):
     @blp.response(200, UserSchema(many=True))
     def get(self):

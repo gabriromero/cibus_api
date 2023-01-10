@@ -15,7 +15,7 @@ from decorators.admin import admin_required
         
 blp = Blueprint("Restaurants", __name__, description="Operations on restaurants")
 
-@blp.route("/restaurant")
+@blp.route("/restaurants")
 class Restaurant(MethodView):
     @blp.response(200, RestaurantSchema(many=True))
     @jwt_required()
@@ -42,7 +42,7 @@ class Restaurant(MethodView):
         
         return restaurant, 201
 
-@blp.route("/restaurant/<string:restaurant_id>")
+@blp.route("/restaurants/<string:restaurant_id>")
 class RestaurantCrud(MethodView):
     @blp.response(200, RestaurantSchema)
     @jwt_required()
