@@ -1,5 +1,8 @@
+
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from sqlalchemy.exc import IntegrityError
 
@@ -7,25 +10,28 @@ from db import db
 from models import RestaurantModel, UserModel
 from schemas import RestaurantSchema, RestaurantUpdateSchema
 
+from decorators.admin import admin_required
+
+        
 blp = Blueprint("Restaurants", __name__, description="Operations on restaurants")
 
 @blp.route("/restaurant")
 class Restaurant(MethodView):
     @blp.response(200, RestaurantSchema(many=True))
+    @jwt_required()
+    @admin_required()
     def get(self):
-        return RestaurantModel.query.all()
+        return RestaurantModel.query.filter_by(user_id=get_jwt_identity())
 
     @blp.arguments(RestaurantSchema)
     @blp.response(200, RestaurantSchema)
+    @jwt_required()
     def post(self, restaurant_data):
-
-        if UserModel.query.get(restaurant_data["user_id"]) is None:
-            abort(400,message="User does not exist")
 
         restaurant = RestaurantModel(
             name = restaurant_data["name"],
             address = restaurant_data["address"],
-            user_id = restaurant_data["user_id"]
+            user_id = get_jwt_identity()
         )
 
         try:
@@ -39,14 +45,23 @@ class Restaurant(MethodView):
 @blp.route("/restaurant/<string:restaurant_id>")
 class RestaurantCrud(MethodView):
     @blp.response(200, RestaurantSchema)
+    @jwt_required()
     def get(self,restaurant_id):
-        store = RestaurantModel.query.get_or_404(restaurant_id)
-        return store
+        restaurant = RestaurantModel.query.get_or_404(restaurant_id)
+
+        if restaurant.user_id is not get_jwt_identity():
+            abort(401)
+
+        return restaurant
 
     @blp.arguments(RestaurantUpdateSchema)
     @blp.response(200, RestaurantSchema)
+    @jwt_required()
     def put(self,restaurant_data, restaurant_id):
         restaurant = RestaurantModel.query.get_or_404(restaurant_id)
+
+        if restaurant.user_id is not get_jwt_identity():
+            abort(401)
         
         if("name" in restaurant_data):
             restaurant.name = restaurant_data["name"]
@@ -59,8 +74,12 @@ class RestaurantCrud(MethodView):
 
         return restaurant,200
 
+    @jwt_required()
     def delete(self,restaurant_id):
         restaurant = RestaurantModel.query.get_or_404(restaurant_id)
+
+        if restaurant.user_id is not get_jwt_identity():
+            abort(401)
 
         try:
             db.session.delete(restaurant)
