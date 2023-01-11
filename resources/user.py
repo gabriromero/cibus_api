@@ -14,10 +14,29 @@ from decorators.admin import admin_required
 
 blp = Blueprint("Users", __name__, description="Operations on users")
 
+@blp.route("/private/users")
+class PrivateUsers(MethodView):
+    @blp.response(200, UserSchema(many=True))
+    def get(self):
+        return UserModel.query.all()
+
+@blp.route("/private/users/<int:user_id>")
+class PrivateUserId(MethodView):
+    @blp.response(201, UserSchema)
+    def delete(self, user_id):
+        user = UserModel.query.get_or_404(user_id)
+
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            
+        except IntegrityError:
+            abort(400,message="First remove associated restaurants")
+
+        return {"message" : "User deleted"}, 200
 @blp.route("/register")
 class Register(MethodView):
     @blp.arguments(UserSchema)
-    @blp.response(200, UserSchema)
     def post(self, user_data):
         user = UserModel(
             mail = user_data["mail"],
@@ -32,7 +51,7 @@ class Register(MethodView):
         except IntegrityError:
             abort(400,message="A User with that username already exists")
         
-        return user, 201
+        return {"msg" : f"User with id {user.id} created"}, 201
 
 @blp.route("/login")
 class Login(MethodView):
@@ -56,32 +75,10 @@ class Logout(MethodView):
         BLOCKLIST.add(jti)
         return {"message" : "Successfully logged out."}
         
-
-
-@blp.route("/private/users/<int:user_id>")
-class UserCrud(MethodView):
-    @blp.response(201, UserSchema)
-    def delete(self, user_id):
-        user = UserModel.query.get_or_404(user_id)
-
-        try:
-            db.session.delete(user)
-            db.session.commit()
-        except IntegrityError:
-            abort(400,message="First remove associated restaurants")
-
-        return {"message" : "User deleted"}, 200
-
 @blp.route("/user")
-class User(MethodView):
+class UserInfo(MethodView):
     @blp.response(200, UserSchema())
     @jwt_required()
     def get(self):
         user = UserModel.query.get_or_404(get_jwt_identity())
         return user
-
-@blp.route("/private/users")
-class User(MethodView):
-    @blp.response(200, UserSchema(many=True))
-    def get(self):
-        return UserModel.query.all()

@@ -15,6 +15,12 @@ from decorators.admin import admin_required
         
 blp = Blueprint("Restaurants", __name__, description="Operations on restaurants")
 
+@blp.route("/private/restaurants")
+class PrivateRestaurants(MethodView):
+    @blp.response(200, RestaurantSchema(many=True))
+    def get(self):
+        return RestaurantModel.query.all()
+
 @blp.route("/restaurants")
 class Restaurant(MethodView):
     @blp.response(200, RestaurantSchema(many=True))
