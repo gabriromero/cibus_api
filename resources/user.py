@@ -2,14 +2,15 @@ from flask_jwt_extended import jwt_required, get_jwt
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from passlib.hash import pbkdf2_sha256
-from flask_jwt_extended import create_access_token
-
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
 from blocklist import BLOCKLIST
 
 from db import db
 from models import UserModel
 from schemas import UserSchema, LoginUserSchema
+
+from decorators.admin import admin_required
 
 blp = Blueprint("Users", __name__, description="Operations on users")
 
@@ -57,13 +58,8 @@ class Logout(MethodView):
         
 
 
-@blp.route("/users/<int:user_id>")
+@blp.route("/private/users/<int:user_id>")
 class UserCrud(MethodView):
-    @blp.response(200, UserSchema)
-    def get(self, user_id):
-        user = UserModel.query.get_or_404(user_id)
-        return user
-
     @blp.response(201, UserSchema)
     def delete(self, user_id):
         user = UserModel.query.get_or_404(user_id)
@@ -76,10 +72,16 @@ class UserCrud(MethodView):
 
         return {"message" : "User deleted"}, 200
 
-@blp.route("/users")
+@blp.route("/user")
+class User(MethodView):
+    @blp.response(200, UserSchema())
+    @jwt_required()
+    def get(self):
+        user = UserModel.query.get_or_404(get_jwt_identity())
+        return user
+
+@blp.route("/private/users")
 class User(MethodView):
     @blp.response(200, UserSchema(many=True))
     def get(self):
         return UserModel.query.all()
-
-    
