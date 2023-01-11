@@ -101,36 +101,7 @@ class MealCrud(MethodView):
 
         if restaurant.user_id is not get_jwt_identity():
             abort(401)
-            
-        meal = MealModel.query.get_or_404(meal_id)
 
-        db.session.delete(meal)
-        db.session.commit()
-
-        return {"message" : f"Meal with name '{meal.name}' deleted"}
-
-@blp.route("/meals/<string:meal_id>")
-class MealCrud(MethodView):
-    @blp.arguments(MealUpdateSchema)
-    @blp.response(200, MealSchema)
-    def put(self,meal_data, meal_id):
-        meal = MealModel.query.get_or_404(meal_id)
-        
-        if("name" in meal_data):
-            meal.name = meal_data["name"]
-        
-        if("description" in meal_data):
-            meal.description = meal_data["description"]
-
-        if("price" in meal_data):
-            meal.price = meal_data["price"]
-
-        db.session.add(meal)
-        db.session.commit()
-
-        return meal,200
-
-    def delete(self,meal_id):
         meal = MealModel.query.get_or_404(meal_id)
 
         db.session.delete(meal)
