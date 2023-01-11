@@ -21,6 +21,20 @@ def create_app(db_url=None):
     load_dotenv()
     CORS(app)
 
+    app.config['API_SPEC_OPTIONS'] = {
+        'security':[{"bearerAuth": []}],
+        'components':{
+            "securitySchemes":
+                {
+                    "bearerAuth": {
+                        "type":"http",
+                        "scheme": "bearer",
+                        "bearerFormat": "JWT"
+                    }
+                }
+        }
+    }
+
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Cibus REST API"
     app.config["API_VERSION"] = "v1"
